@@ -12,14 +12,14 @@ function createSearchBookHandler(libraryInstance) {
             const title = intent.slots.title.value;
             if (!title) {
                 return handlerInput.responseBuilder
-                    .speak("Please provide the title of the book you are searching for.")
+                    .speak("Por favor dame el título del libro que buscas")
                     .getResponse();
             }
 
             const found = libraryInstance.find_media(title);
             const speakOutput = found
                 ? found.get_description()
-                : `No book with the title '${title}' was found in your library.`;
+                : `Ningún libro con el título '${title}' se encontró en tu librería.`;
 
             return handlerInput.responseBuilder
                 .speak(speakOutput)

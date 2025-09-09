@@ -18,7 +18,7 @@ function createAddBookHandler(libraryInstance) {
 
             if (!title || !author || !genre || isNaN(pages)) {
                 return handlerInput.responseBuilder
-                    .speak("Missing or invalid information to add the book. Please provide title, author, genre, and number of pages.")
+                    .speak("Información faltante añade más datos")
                     .getResponse();
             }
 
@@ -26,8 +26,8 @@ function createAddBookHandler(libraryInstance) {
             const success = libraryInstance.add_media(newBook);
 
             const speakOutput = success
-                ? `Book '${title}' by ${author} added successfully.`
-                : `A book with the title '${title}' already exists.`;
+                ? `El libro '${title}' por ${author} fue añadido exitosamente.`
+                : `Un libro con el título '${title}' ya existía.`;
 
             return handlerInput.responseBuilder
                 .speak(speakOutput)
