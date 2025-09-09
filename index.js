@@ -37,7 +37,7 @@ const HelloWorldIntentHandler = {
 const AddBookIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AddBookIntent';
     },
     handle(handlerInput) {
         const speakOutput = "Book added";
@@ -47,6 +47,20 @@ const AddBookIntentHandler = {
             .getResponse();
     }
 };
+
+const SearchBookIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'SearchBookIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = "Book found";
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .getResponse();
+    }
+}
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
