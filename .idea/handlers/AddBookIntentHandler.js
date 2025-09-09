@@ -1,34 +1,39 @@
-const Book = require('./models/Book');
-const libraryInstance = require('./models/libraryInstance');
+// AddBookIntentHandler.js
+const { Book } = require('./Library');
 
-const AddBookIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AddBookIntent';
-    },
-    handle(handlerInput) {
-        const slots = handlerInput.requestEnvelope.request.intent.slots;
+function createAddBookHandler(libraryInstance) {
+    return {
+        canHandle(handlerInput) {
+            return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+                handlerInput.requestEnvelope.request.intent.name === 'AddBookIntent';
+        },
+        handle(handlerInput) {
+            const { request } = handlerInput.requestEnvelope;
+            const intent = request.intent;
 
-        const title = slots.title.value;
-        const author = slots.author.value;
-        const genre = slots.genre.value;
-        const pages = parseInt(slots.pages.value, 10);
+            const title = intent.slots.title.value;
+            const author = intent.slots.author.value;
+            const genre = intent.slots.genre.value;
+            const pages = parseInt(intent.slots.pages.value);
 
-        if (!title || !author || !genre || isNaN(pages)) {
-            const speakOutput = "Por favor, proporciona todos los datos del libro: título, autor, género y número de páginas.";
+            if (!title || !author || !genre || isNaN(pages)) {
+                return handlerInput.responseBuilder
+                    .speak("Missing or invalid information to add the book. Please provide title, author, genre, and number of pages.")
+                    .getResponse();
+            }
+
+            const newBook = new Book(title, author, genre, pages);
+            const success = libraryInstance.add_media(newBook);
+
+            const speakOutput = success
+                ? `Book '${title}' by ${author} added successfully.`
+                : `A book with the title '${title}' already exists.`;
+
             return handlerInput.responseBuilder
                 .speak(speakOutput)
-                .reprompt(speakOutput)
                 .getResponse();
         }
+    };
+}
 
-        const newBook = new Book(title, author, genre, 'pendiente', pages);
-        libraryInstance.add_media(newBook);
-
-        const speakOutput = `El libro "${title}" de ${author} ha sido agregado a tu biblioteca.`;
-
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .getResponse();
-    }
-};
+module.exports = createAddBookHandler;
